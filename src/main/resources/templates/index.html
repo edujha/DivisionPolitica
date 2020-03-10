@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Spring Boot Thymeleaf Application - Division Politica</title>
+
+<link th:rel="stylesheet"
+	th:href="@{assets/select2-develop/dist/css/select2.css}" />
+<link th:rel="stylesheet"
+	th:href="@{assets/select2-bootstrap4-theme-master/dist/select2-bootstrap4.css}" />
+<link th:rel="stylesheet"
+	th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} " />
+
+</head>
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+		<div class="container">
+			<a class="navbar-brand" href="/">División Política</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item active"><a class="nav-link" href="#">Home
+							<span class="sr-only">(current)</span>
+					</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">About</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Services</a>
+					</li>
+					<li class="nav-item"><a class="nav-link" href="#">Contact</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<form method="post">
+			<div class="row">
+				<div class="col-md-4 mt-5">
+
+
+					<div class="form-group">
+						<label for="provincias">Provincias</label> <select id="provincias"
+							class="form-control select2-single">
+							<option value="">Buscar...</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="cantones">Cantones</label> <select id="cantones"
+							class="form-control select2-single">
+							<option value="">Buscar...</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label for="distritos">Distritos</label> <select id="distritos"
+							class="form-control select2-single">
+							<option value="">Buscar...</option>
+						</select>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-4 mt-5">
+					<button class="btn btn-primary" type="submit">Submit form</button>
+
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	<script th:src="@{assets/select2-develop/dist/js/select2.full.js}"></script>
+
+	<script>
+		$( "#provincias" ).change(function() {
+			$('#cantones').val(null).trigger('change');
+			$('#distritos').val(null).trigger('change');
+		});
+		$("#provincias").select2({
+			theme : "bootstrap4",
+			ajax : {
+				url : '/estructura/provincias',
+				dataType : 'json',
+				delay : 500,
+				allowClear : true,
+				data : function(params) {
+					var query = {
+						search : params.term
+					//,
+					//page: params.page || 1
+					}
+
+					// Query parameters will be ?search=[term]&page=[page]
+					return query;
+				},
+				processResults : function(response) {
+					return {
+						results : response
+					};
+				},
+				cache : true
+			}
+		});
+		
+		$( "#cantones" ).change(function() {
+			$('#distritos').val(null).trigger('change');
+		});
+		$("#cantones").select2({
+			theme : "bootstrap4",
+			ajax : {
+				url : '/estructura/cantones',
+				dataType : 'json',
+				delay : 500,
+				allowClear : true,
+				data : function(params) {
+					var query = {
+						search : params.term,
+						codProvincia : $("#provincias").val()
+					//page: params.page || 1
+					}
+
+					// Query parameters will be ?search=[term]&page=[page]
+					return query;
+				},
+				processResults : function(response) {
+					return {
+						results : response
+					};
+				},
+				cache : true
+			}
+		});
+		
+		$("#distritos").select2({
+			theme : "bootstrap4",
+			ajax : {
+				url : '/estructura/distritos',
+				dataType : 'json',
+				delay : 500,
+				allowClear : true,
+				data : function(params) {
+					var query = {
+						search : params.term,
+						codProvincia : $("#provincias").val(),
+						codCanton : $("#cantones").val()
+					//page: params.page || 1
+					}
+
+					// Query parameters will be ?search=[term]&page=[page]
+					return query;
+				},
+				processResults : function(response) {
+					return {
+						results : response
+					};
+				},
+				cache : true
+			}
+		});
+	</script>
+
+</body>
+</html>

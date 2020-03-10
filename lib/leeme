@@ -1,0 +1,5 @@
+Microsoft SQL Libraries
+To handle the Microsoft SQL Librarie is needed to install the jar files, which are located in the lib folder on this repository.
+
+SQL JDBC driver
+mvn install:install-file -Dfile=lib/com/microsoft/sqlserver/sqljdbc42.jar  -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc42 -Dversion=4.2 -Dpackaging=jar
